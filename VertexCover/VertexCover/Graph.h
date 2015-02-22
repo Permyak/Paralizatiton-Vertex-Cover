@@ -1,13 +1,15 @@
 #pragma once
 #include <string>
+#include <vector>
 class Graph
 {
 public:
 	Graph();
 	~Graph();
 	void ReadGraph(std::string);
+
 private:
-	vector< vector <int> > graph;
+	std::vector <std::vector <int> > graph;
 	int vertexCount;
 };
 
