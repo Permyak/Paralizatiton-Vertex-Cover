@@ -6,5 +6,6 @@ int _tmain(int argc, _TCHAR* argv[])
 {
 	Graph *graph = new Graph();
 	graph->ReadGraph("graph.txt");
+	graph->FindVertexCover();
 	return 0;
 }
