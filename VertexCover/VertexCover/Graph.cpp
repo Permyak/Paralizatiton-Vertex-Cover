@@ -19,6 +19,11 @@ Graph::~Graph()
 {
 }
 
+struct ARC {
+	bool isCovered;
+	int fromVertex, toVertex;
+};
+
 void Graph::ReadGraph(string inputFileName)
 {
 	cout << "Vertex Cover." << endl;
@@ -39,7 +44,12 @@ void Graph::ReadGraph(string inputFileName)
 
 void Graph::FindVertexCover(){
 	vector<int> vertexForCover;
-	vector<int> arcsForCover;
+	vector<ARC> arcsForCover;
+	DeleteIsolateVertex(vertexForCover);
+
+}
+
+void Graph::DeleteIsolateVertex(vector<int> vertexForCover){
 	for (int i = 0; i < vertexCount; i++)
 	{
 		int j = GetNeighbore(i, vertexForCover);
@@ -50,7 +60,7 @@ void Graph::FindVertexCover(){
 			}
 		}
 	}
-	sort(vertexForCover.begin, vertexForCover.end);
+	sort(vertexForCover.begin(), vertexForCover.end());
 }
 
 int Graph::GetNeighbore(int vertexIndex, vector<int> vertexForCover){
