@@ -15,5 +15,6 @@ private:
 	int GetNeighbore(int vertexIndex, std::vector<int> vertexForCover);
 	void DeleteIsolateVertex(std::vector<int>*);
 	int GetNextVertexSet();
+	std::vector<int> GetCoverForNumber(int coverSize, int coverNumber);
 };
 

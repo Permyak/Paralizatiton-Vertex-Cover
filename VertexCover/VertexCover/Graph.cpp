@@ -7,6 +7,7 @@
 #include <string> 
 #include <vector> 
 #include <tchar.h>
+#include <functional>
 using namespace std;
 
 
@@ -53,7 +54,14 @@ void Graph::FindVertexCover(){
 	vertexSetCount = pow(2, vertexForCover.size());
 	int vertexSet;
 	while ((vertexSet = GetNextVertexSet())>0){
-		cout << vertexSet << endl;
+		vector<int> currentCover = GetCoverForNumber(vertexForCover.size(), vertexSet);
+		cout << "Current setNumber is " + to_string(vertexSet) << endl;
+		string coverString = "Current cover is [ ";
+		for each (int i in currentCover)
+		{
+			coverString += to_string(i) + " ";
+		}
+		cout << coverString + "]" << endl;
 	}
 	cin.get();
 }
@@ -85,4 +93,17 @@ int Graph::GetNeighbore(int vertexIndex, vector<int> vertexForCover){
 
 int Graph::GetNextVertexSet(){
 	return currentVertexSetNumber < vertexSetCount ? currentVertexSetNumber++ : -1;
+}
+
+vector<int> Graph::GetCoverForNumber(int coverSize, int coverNumber){
+	vector<int> resultCover;
+	for (int j = 0; j < coverSize; j++)
+	{
+		//if  j  bit is set then add j vertex to cover
+		if ((coverNumber & (1 << j)) != 0)
+		{
+			resultCover.push_back(j);
+		}
+	}
+	return resultCover;
 }
