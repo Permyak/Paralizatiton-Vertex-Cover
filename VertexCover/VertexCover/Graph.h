@@ -11,8 +11,9 @@ public:
 
 private:
 	std::vector <std::vector <int> > graph;
-	int vertexCount;
+	int vertexCount, currentVertexSetNumber, vertexSetCount;
 	int GetNeighbore(int vertexIndex, std::vector<int> vertexForCover);
-	void DeleteIsolateVertex(std::vector<int>);
+	void DeleteIsolateVertex(std::vector<int>*);
+	int GetNextVertexSet();
 };
 

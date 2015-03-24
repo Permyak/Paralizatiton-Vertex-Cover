@@ -45,22 +45,31 @@ void Graph::ReadGraph(string inputFileName)
 void Graph::FindVertexCover(){
 	vector<int> vertexForCover;
 	vector<ARC> arcsForCover;
-	DeleteIsolateVertex(vertexForCover);
-
+	DeleteIsolateVertex(&vertexForCover);
+	if (vertexForCover.size() == 0) {
+		cout << "Graph has not got arcs." << endl;
+	}
+	currentVertexSetNumber = 1;
+	vertexSetCount = pow(2, vertexForCover.size());
+	int vertexSet;
+	while ((vertexSet = GetNextVertexSet())>0){
+		cout << vertexSet << endl;
+	}
+	cin.get();
 }
 
-void Graph::DeleteIsolateVertex(vector<int> vertexForCover){
+void Graph::DeleteIsolateVertex(vector<int>* vertexForCover){
 	for (int i = 0; i < vertexCount; i++)
 	{
-		int j = GetNeighbore(i, vertexForCover);
+		int j = GetNeighbore(i, *vertexForCover);
 		if (j != -1){
-			vertexForCover.push_back(i);
-			if (std::find(vertexForCover.begin(), vertexForCover.end(), j) == vertexForCover.end()){
-				vertexForCover.push_back(j);
+			(*vertexForCover).push_back(i);
+			if (std::find((*vertexForCover).begin(), (*vertexForCover).end(), j) == (*vertexForCover).end()){
+				(*vertexForCover).push_back(j);
 			}
 		}
 	}
-	sort(vertexForCover.begin(), vertexForCover.end());
+	sort((*vertexForCover).begin(), (*vertexForCover).end());
 }
 
 int Graph::GetNeighbore(int vertexIndex, vector<int> vertexForCover){
@@ -72,4 +81,8 @@ int Graph::GetNeighbore(int vertexIndex, vector<int> vertexForCover){
 		}
 	}
 	return -1;
+}
+
+int Graph::GetNextVertexSet(){
+	return currentVertexSetNumber < vertexSetCount ? currentVertexSetNumber++ : -1;
 }
