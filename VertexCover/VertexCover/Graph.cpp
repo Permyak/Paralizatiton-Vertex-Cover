@@ -8,6 +8,7 @@
 #include <vector> 
 #include <tchar.h>
 #include <functional>
+#include <time.h>
 using namespace std;
 
 
@@ -43,14 +44,21 @@ void Graph::ReadGraph(string inputFileName)
 	}
 }
 
-void Graph::Generate(int vertexCount, int falseFrequency){
+void Graph::Generate(int userVertexCount, double falseFrequency){
 	cout << "Generate graph." << endl;
+	srand(time(NULL));
+	vertexCount = userVertexCount;
 	for (int i = 0; i < vertexCount; i++)
 	{
-		vector<bool> row(vertexCount);
-		for (int j = 0; j < vertexCount; j++)
+		vector<bool> row;
+		for (int j = 0; j < i; j++)
 		{
-			if (rand() / RAND_MAX > falseFrequency){
+			row.push_back(graph[j][i]);
+		}
+		row.push_back(false);
+		for (int j = i+1; j < vertexCount; j++)
+		{
+			if ((double) rand() / RAND_MAX > falseFrequency){
 				row.push_back(true);
 			}
 			else{
@@ -58,6 +66,19 @@ void Graph::Generate(int vertexCount, int falseFrequency){
 			}
 		}
 		graph.push_back(row);
+	}
+
+	for (int i = 0; i < vertexCount; i++)
+	{
+		string row;
+		for (int j = 0; j < vertexCount; j++)
+		{
+			if (graph[i][j])
+				row += "1 ";
+			else
+				row += "0 ";
+		}
+		cout << row << endl;
 	}
 }
 
@@ -74,7 +95,7 @@ void Graph::FindVertexCover(){
 	int vertexSet;
 	while ((vertexSet = GetNextVertexSet())>0){
 		vector<int> currentCover = GetCoverForNumber(vertexForCover.size(), vertexSet);
-		cout << "Current setNumber is " + to_string(vertexSet) << endl;
+		//cout << "Current setNumber is " + to_string(vertexSet) << endl;
 		PrintCoverInfo(currentCover);
 		if (IsSetCovered(currentCover, arcsForCover, vertexForCover)){
 			if (currentCover.size() < minCoverSize){
@@ -134,7 +155,7 @@ void Graph::PrintCoverInfo(vector<int> cover){
 	{
 		coverString += to_string(i) + " ";
 	}
-	cout << coverString + "]" << endl;
+	//cout << coverString + "]" << endl;
 }
 
 bool Graph::IsSetCovered(vector<int> checkingCover, vector<Graph::ARC> arcCover, vector<int> vertexCover){

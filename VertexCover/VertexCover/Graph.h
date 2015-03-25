@@ -14,7 +14,7 @@ class Graph
 		~Graph();
 		void ReadGraph(std::string);
 		void FindVertexCover();
-		void Generate(int vertexCount, int frequency);
+		void Generate(int vertexCount, double falseFrequency);
 
 	private:
 		std::vector <std::vector <bool> > graph;
