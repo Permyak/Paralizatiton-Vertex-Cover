@@ -8,7 +8,7 @@ int _tmain(int argc, _TCHAR* argv[])
 {
 	Graph *graph = new Graph();
 	//graph->ReadGraph("graph.txt");
-	graph->Generate(10, 0.9);
+	graph->Generate(10, 0.8);
 	graph->FindVertexCover();
 	return 0;
 }

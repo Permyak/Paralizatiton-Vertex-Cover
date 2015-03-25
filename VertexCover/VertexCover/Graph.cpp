@@ -84,7 +84,6 @@ void Graph::Generate(int userVertexCount, double falseFrequency){
 
 void Graph::FindVertexCover(){
 	vector<int> vertexForCover;
-	vector<ARC> arcsForCover;
 	DeleteIsolateVertex(&vertexForCover);
 	if (vertexForCover.size() == 0) {
 		cout << "Graph has not got arcs." << endl;
@@ -94,10 +93,10 @@ void Graph::FindVertexCover(){
 	int minCoverSize = vertexForCover.size();
 	int vertexSet;
 	while ((vertexSet = GetNextVertexSet())>0){
-		vector<int> currentCover = GetCoverForNumber(vertexForCover.size(), vertexSet);
+		vector<int> currentCover = GetCoverForNumber(vertexForCover, vertexSet);
 		//cout << "Current setNumber is " + to_string(vertexSet) << endl;
 		PrintCoverInfo(currentCover);
-		if (IsSetCovered(currentCover, arcsForCover, vertexForCover)){
+		if (IsSetCovered(currentCover, vertexForCover)){
 			if (currentCover.size() < minCoverSize){
 				minCoverSize = currentCover.size();
 			}
@@ -112,7 +111,9 @@ void Graph::DeleteIsolateVertex(vector<int>* vertexForCover){
 	{
 		int j = GetNeighbore(i, *vertexForCover);
 		if (j != -1){
-			(*vertexForCover).push_back(i);
+			if (std::find((*vertexForCover).begin(), (*vertexForCover).end(), i) == (*vertexForCover).end()){
+				(*vertexForCover).push_back(i);
+			}
 			if (std::find((*vertexForCover).begin(), (*vertexForCover).end(), j) == (*vertexForCover).end()){
 				(*vertexForCover).push_back(j);
 			}
@@ -122,12 +123,10 @@ void Graph::DeleteIsolateVertex(vector<int>* vertexForCover){
 }
 
 int Graph::GetNeighbore(int vertexIndex, vector<int> vertexForCover){
-	if (std::find(vertexForCover.begin(), vertexForCover.end(), vertexIndex) == vertexForCover.end()){
-		for (int j = vertexIndex + 1; j < vertexCount; j++)
-		{
-			if (graph.at(vertexIndex).at(j) == 1)
-				return j;
-		}
+	for (int j = vertexIndex + 1; j < vertexCount; j++)
+	{
+		if (graph.at(vertexIndex).at(j) == 1)
+			return j;
 	}
 	return -1;
 }
@@ -136,14 +135,14 @@ int Graph::GetNextVertexSet(){
 	return currentVertexSetNumber < vertexSetCount ? currentVertexSetNumber++ : -1;
 }
 
-vector<int> Graph::GetCoverForNumber(int coverSize, int coverNumber){
+vector<int> Graph::GetCoverForNumber(vector<int> vertexForCover, int coverNumber){
 	vector<int> resultCover;
-	for (int j = 0; j < coverSize; j++)
+	for (int j = 0; j < vertexForCover.size(); j++)
 	{
 		//if  j  bit is set then add j vertex to cover
 		if ((coverNumber & (1 << j)) != 0)
 		{
-			resultCover.push_back(j);
+			resultCover.push_back(vertexForCover.at(j));
 		}
 	}
 	return resultCover;
@@ -158,28 +157,29 @@ void Graph::PrintCoverInfo(vector<int> cover){
 	//cout << coverString + "]" << endl;
 }
 
-bool Graph::IsSetCovered(vector<int> checkingCover, vector<Graph::ARC> arcCover, vector<int> vertexCover){
-	CoverArcs(checkingCover, &vertexCover);
-	return !HasGraphArcs();
+bool Graph::IsSetCovered(vector<int> checkingCover, vector<int> vertexCover){
+	vector<vector<bool>> graphCopy = graph;
+	CoverArcs(checkingCover, &vertexCover, &graphCopy);
+	return !HasGraphArcs(graphCopy);
 }
 
-void Graph::CoverArcs(std::vector<int> checkingCover, std::vector<int>* vertexCover){
+void Graph::CoverArcs(vector<int> checkingCover, vector<int>* vertexCover, vector<vector<bool>>* graphCopy){
 	for each (int vertexInCover in checkingCover)
 	{
 		for each (int vertex in *vertexCover)
 		{
-			if (graph[vertexInCover][vertex]){
-				graph[vertexInCover][vertex] = false;
-				graph[vertex][vertexInCover] = false;
+			if ((*graphCopy)[vertexInCover][vertex]){
+				(*graphCopy)[vertexInCover][vertex] = false;
+				(*graphCopy)[vertex][vertexInCover] = false;
 			}
 		}
 	}
 }
 
-bool Graph::HasGraphArcs(){
-	for each (vector<bool> verteces in graph)
+bool Graph::HasGraphArcs(vector<vector<bool>> graphCopy){
+	for each (vector<bool> verteces in graphCopy)
 	{
-		if (std::find(verteces.begin(), verteces.end(), true) == verteces.end()){
+		if (std::find(verteces.begin(), verteces.end(), true) != verteces.end()){
 			return true;
 		}
 	}

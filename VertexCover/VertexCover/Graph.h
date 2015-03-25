@@ -4,11 +4,6 @@
 
 class Graph
 {
-	struct ARC {
-		bool isCovered;
-		int fromVertex, toVertex;
-	};
-
 	public:
 		Graph();
 		~Graph();
@@ -22,10 +17,10 @@ class Graph
 		int GetNeighbore(int vertexIndex, std::vector<int> vertexForCover);
 		void DeleteIsolateVertex(std::vector<int>*);
 		int GetNextVertexSet();
-		std::vector<int> GetCoverForNumber(int coverSize, int coverNumber);
+		std::vector<int> GetCoverForNumber(std::vector<int> vertexForCover, int coverNumber);
 		void PrintCoverInfo(std::vector<int> cover);
-		bool IsSetCovered(std::vector<int> CheckingCover, std::vector<ARC> arcCover, std::vector<int> vertexCover);
-		void CoverArcs(std::vector<int> vertexCover, std::vector<int>* verteces);
-		bool HasGraphArcs();
+		bool IsSetCovered(std::vector<int> CheckingCover, std::vector<int> vertexCover);
+		void CoverArcs(std::vector<int> vertexCover, std::vector<int>* verteces, std::vector<std::vector<bool>>* graphCopy);
+		bool HasGraphArcs(std::vector<std::vector<bool>> graphCopy);
 };
 
